@@ -3,10 +3,10 @@
 ## Overview
 This repository provides the code used to study fire ant tower building, and its possible robotic implementation, in [Nave et al. (2019)](https://www.biorxiv.org/content/10.1101/864306v1). The primary function provided in this repository, `TowerSimulation.m`, provides a MATLAB simulation of agents climbing on top of one another to build towers.
 
-Also provided are 
-
 ## Function usage:
-**TowerSimulation(c, p\_u, k\_nl)**
+**TowerSimulation(c, p\_u, k\_nl)** - Runs a simulation and generates an output file
+
+### Optional parameters:
 
 ## References:
 
