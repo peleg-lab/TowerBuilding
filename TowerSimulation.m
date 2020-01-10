@@ -10,28 +10,54 @@
 % Updated May 17th 2017                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function TowerSimulation(c,p_u,k_n_l)
+function TowerSimulation(c,p_u,k_n_l,varargin)
 global PERIODIC L
 
-%%% Input parameters
+
+%%% Required input parameters
 % c     %Ratio of attraction to randomness
 % p_u   %probability agent spontaneously unlocks position
 % k_n_l %probability agent locks position 
         %  depending on num. of locked neighbors
 
-%% Seed the random number generator
-s = rng('shuffle'); % Initialize the random number generator
-% s = rng(100); % May be used when testing different versions of code
+%%% Optional parameters, parsed using inputParser
+parser = inputParser;
+% RNGseed: Seed value for random number generator.
+% Can be replaced with a scalar when testing
+addParameter(parser, 'RNGseed', 'shuffle'); 
+% NumAgents: Number of agents in the simulation
+addParameter(parser, 'NumAgents', 1000); 
+% NumSteps: Number of simulation time steps
+addParameter(parser, 'NumSteps', 500000); 
+% SideLength: Arena size is SideLength x SideLength
+addParameter(parser, 'SideLength', 100); 
+% ClimbHeight: Max climb height of each agent
+addParameter(parser, 'ClimbHeight', 1); 
+% Psl: Probability of spontaneous locking
+addParameter(parser, 'Psl', 0.00005); 
+% Periodic: Whether or not to use periodic boundary conditions
+% Use 1 for periodic or 0 for free
+addParameter(parser, 'Periodic', 1); 
+% OutputFolder: Folder to save output data to
+addParameter(parser, 'OutputFolder', 'Output'); 
+
+parse(parser, varargin{:});
 
 %%% Internal parameters
-N = 1000;          %No. of agents
-frames = 500000;   %No. of time steps
-L = 100;           %Axis limits
-max_climb = 1;     %max height of climbing agents
-p_s_l = 0.00005;   %probability agent spontaneously locks position
+N = parser.Results.NumAgents;          % No. of agents, default 1,000
+frames = parser.Results.NumSteps;      % No. of time steps, default 500,000
+L = parser.Results.SideLength;         %Axis limits, default 100
+max_climb = parser.Results.ClimbHeight;%max height of climbing agents, default 1
+p_s_l = parser.Results.Psl;            %probability agent spontaneously locks
+% default, 0.00005
 
 % 1: periodic boundary condition, 0: unlimited
-PERIODIC = 1; 
+% default, 1
+PERIODIC = parser.Results.Periodic; 
+
+%% Seed the random number generator
+s = rng(parser.Results.RNGseed); % Initialize the random number generator
+% default, 'shuffle'
 
 % List of distances to 8 neighboring pixels for any given pixel.
 spacelist = [-1, -1; 
@@ -45,7 +71,7 @@ spacelist = [-1, -1;
 
 %%% Output file parameters
 % Subfolder to output data to:
-folder = 'Output';
+folder = parser.Results.OutputFolder;
 
 % Make sure that the folder exists 
 if ~exist(strcat('Data/',folder))
