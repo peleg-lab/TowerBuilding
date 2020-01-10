@@ -21,9 +21,6 @@ global PERIODIC L
         %  depending on num. of locked neighbors
 
 %%% Optional parameters, parsed using inputParser
-% RNGseed      % Seed value for random number generator.
-               % Can be replaced with a scalar when testing
-               % default: 'shuffle'
 % NumAgents    % Number of agents in the simulation
                % default: 1,000
 % NumSteps     % Number of simulation time steps
@@ -41,18 +38,21 @@ global PERIODIC L
                % default: 'Output'
 % SaveFreq     % Frequency of saving to output file, once every SaveFreq frames
                % default: 250
+% RNGseed      % Seed value for random number generator.
+               % Can be replaced with a scalar when testing
+               % default: 'shuffle'
 
 parser = inputParser;
 
-addParameter(parser, 'RNGseed', 'shuffle'); 
 addParameter(parser, 'NumAgents', 1000); 
 addParameter(parser, 'NumSteps', 20000); 
 addParameter(parser, 'SideLength', 100); 
 addParameter(parser, 'ClimbHeight', 1); 
 addParameter(parser, 'Psl', 0.00005); 
 addParameter(parser, 'Periodic', 1); 
-addParameter(parser, 'OutputFolder', 'Output'); 
+addParameter(parser, 'OutputFolder', 'Data/Output'); 
 addParameter(parser, 'SaveFreq', 250);
+addParameter(parser, 'RNGseed', 'shuffle'); 
 
 parse(parser, varargin{:});
 
@@ -87,12 +87,12 @@ spacelist = [-1, -1;
 folder = parser.Results.OutputFolder;
 
 % Make sure that the folder exists 
-if ~exist(strcat('Data/',folder))
-    mkdir(strcat('Data/',folder))
+if ~exist(folder)
+    mkdir(folder))
 end
 
 % Generate output filename
-savename = sprintf('c%4.2f.su%5.3f.nl%5.3f',c,p_u,k_nl);
+savename = sprintf('c%4.2f.pu%5.3f.knl%5.3f',c,p_u,k_nl);
 
 % Frequency of file output, once every save_freq time steps
 save_freq = parser.Results.SaveFreq;
@@ -101,7 +101,7 @@ save_freq = parser.Results.SaveFreq;
 for i=1:25
     temp = strcat(savename,sprintf('.v%1d', i)); % Append version number
     % Check for existing filename
-    fnamecheck = strcat('Data/',folder,'/',temp,'_parameters.mat');
+    fnamecheck = strcat(folder,'/',temp,'_parameters.mat');
     % Stop at the first version number that does not exist
     if exist(fnamecheck,'file')==0 
         savename = temp; 
@@ -110,7 +110,7 @@ for i=1:25
 end
 
 % Save .mat file with existing parameters
-save(strcat('Data/',folder,'/',savename,'_parameters.mat'))
+save(strcat(folder,'/',savename,'_parameters.mat'))
 
 %%% Initialize variables
 p = L*rand(2,N)-L/2; % List of all individual (x,y) positions, randomized under uniform distribution from -L/2 to L/2
@@ -124,7 +124,7 @@ h_map = zeros(L, L); % Initial height map
 
 % Save data: for each frame, 5 rows are written: x, y, z, locked, covered
 p_frame = [p;h_level;locked;covered];
-dlmwrite(strcat('Data/',folder,'/',savename,'_output.txt'),p_frame,'-append')
+dlmwrite(strcat(folder,'/',savename,'_output.txt'),p_frame,'-append')
 
 % Calculate inter-particle distances
 d2 = pdist([p(1,:)' p(2,:)' h_level'],@distfun3d);
@@ -306,7 +306,7 @@ for k=1:frames
     % Save positions of all agents once every 250 frames
     p_frame = [p;h_level;locked;covered];
     if mod(k, save_freq) == 0 
-    dlmwrite(strcat('Data/',folder,'/',savename,'_output.txt'),p_frame,'-append')
+    dlmwrite(strcat(folder,'/',savename,'_output.txt'),p_frame,'-append')
     end
 end
 end
