@@ -2,7 +2,7 @@
 % Agent-based modeling code for tower-building            %
 % inspired by fire ants by:                               %
 % Gary Nave, Postdoc, University of Colorado Boulder      %
-% Updated Dec. 19, 2019                                   %
+% Updated Jan. 9, 2020                                    %
 
 % Initial agent-based code template by:                   %
 % Kirstin Petersen, Asst. Prof. ECE, Cornell University   %
@@ -10,45 +10,58 @@
 % Updated May 17th 2017                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function TowerSimulation(c,p_u,k_n_l,varargin)
+function TowerSimulation(c,p_u,k_nl,varargin)
 global PERIODIC L
 
 
 %%% Required input parameters
 % c     %Ratio of attraction to randomness
 % p_u   %probability agent spontaneously unlocks position
-% k_n_l %probability agent locks position 
+% k_nl %probability agent locks position 
         %  depending on num. of locked neighbors
 
 %%% Optional parameters, parsed using inputParser
+% RNGseed      % Seed value for random number generator.
+               % Can be replaced with a scalar when testing
+               % default: 'shuffle'
+% NumAgents    % Number of agents in the simulation
+               % default: 1,000
+% NumSteps     % Number of simulation time steps
+               % default: 20,000
+% SideLength   % Arena size is SideLength x SideLength
+               % default: 100
+% ClimbHeight  % Max climb height of each agent
+               % default: 1
+% Psl          % Probability of spontaneous locking
+               % default: 0.00005
+% Periodic     % Whether or not to use periodic boundary conditions
+               % Use 1 for periodic or 0 for free
+               % default: 1
+% OutputFolder % Folder to save output data
+               % default: 'Output'
+% SaveFreq     % Frequency of saving to output file, once every SaveFreq frames
+               % default: 250
+
 parser = inputParser;
-% RNGseed: Seed value for random number generator.
-% Can be replaced with a scalar when testing
+
 addParameter(parser, 'RNGseed', 'shuffle'); 
-% NumAgents: Number of agents in the simulation
 addParameter(parser, 'NumAgents', 1000); 
-% NumSteps: Number of simulation time steps
-addParameter(parser, 'NumSteps', 500000); 
-% SideLength: Arena size is SideLength x SideLength
+addParameter(parser, 'NumSteps', 20000); 
 addParameter(parser, 'SideLength', 100); 
-% ClimbHeight: Max climb height of each agent
 addParameter(parser, 'ClimbHeight', 1); 
-% Psl: Probability of spontaneous locking
 addParameter(parser, 'Psl', 0.00005); 
-% Periodic: Whether or not to use periodic boundary conditions
-% Use 1 for periodic or 0 for free
 addParameter(parser, 'Periodic', 1); 
-% OutputFolder: Folder to save output data to
 addParameter(parser, 'OutputFolder', 'Output'); 
+addParameter(parser, 'SaveFreq', 250);
 
 parse(parser, varargin{:});
 
 %%% Internal parameters
-N = parser.Results.NumAgents;          % No. of agents, default 1,000
-frames = parser.Results.NumSteps;      % No. of time steps, default 500,000
-L = parser.Results.SideLength;         %Axis limits, default 100
-max_climb = parser.Results.ClimbHeight;%max height of climbing agents, default 1
-p_s_l = parser.Results.Psl;            %probability agent spontaneously locks
+N = parser.Results.NumAgents;           % No. of agents, default 1,000
+frames = parser.Results.NumSteps;       % No. of time steps, default 500,000
+L = parser.Results.SideLength;          % Axis limits, default 100
+max_climb = parser.Results.ClimbHeight; % Max height of climbing agents, default 1
+p_s_l = parser.Results.Psl;             % Probability agent spontaneously locks
 % default, 0.00005
 
 % 1: periodic boundary condition, 0: unlimited
@@ -79,7 +92,10 @@ if ~exist(strcat('Data/',folder))
 end
 
 % Generate output filename
-savename = sprintf('c%4.2f.su%5.3f.nl%5.3f',c,p_u,k_n_l);
+savename = sprintf('c%4.2f.su%5.3f.nl%5.3f',c,p_u,k_nl);
+
+% Frequency of file output, once every save_freq time steps
+save_freq = parser.Results.SaveFreq;
 
 % Generate version number by checking existing files
 for i=1:25
@@ -273,7 +289,7 @@ for k=1:frames
             % If uncovered and unlocked
             if locked(i)==0
                 % Randomly lock position, based on spontaneous lock probability and neighbor lock probability
-                if rand()< p_s_l || rand() < locked_neigh(i)*k_n_l
+                if rand()< p_s_l || rand() < locked_neigh(i)*k_nl
                     locked(i) = 1;
                     h_map(ind(1), ind(2)) = h_map(ind(1), ind(2))+1; % Increase h_map at locked agent location
                 end
@@ -289,7 +305,7 @@ for k=1:frames
 
     % Save positions of all agents once every 250 frames
     p_frame = [p;h_level;locked;covered];
-    if mod(k, 250) == 0 
+    if mod(k, save_freq) == 0 
     dlmwrite(strcat('Data/',folder,'/',savename,'_output.txt'),p_frame,'-append')
     end
 end
