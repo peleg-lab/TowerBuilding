@@ -17,7 +17,7 @@ global PERIODIC L
 %%% Required input parameters
 % c     %Ratio of attraction to randomness
 % p_u   %probability agent spontaneously unlocks position
-% k_nl %probability agent locks position 
+% k_nl  %probability agent locks position 
         %  depending on num. of locked neighbors
 
 %%% Optional parameters, parsed using inputParser
