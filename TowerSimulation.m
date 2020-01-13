@@ -88,7 +88,7 @@ folder = parser.Results.OutputFolder;
 
 % Make sure that the folder exists 
 if ~exist(folder)
-    mkdir(folder))
+    mkdir(folder)
 end
 
 % Generate output filename
