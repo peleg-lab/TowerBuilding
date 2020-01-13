@@ -79,7 +79,7 @@ function out = TowerProperties(c, p_u, k_nl, v, varargin)
     out.MaxNumAnts = zeros(1, num_frames);      % Number of agents per tower
     
     % Iterate through all simulation frames
-    for f = 0:num_frames
+    for f = 0:num_frames-1
         % Load x, y positions from p_history
         p = p_history((5*f+1):(5*f+2), :);
         
@@ -111,33 +111,33 @@ function out = TowerProperties(c, p_u, k_nl, v, varargin)
         end
         
         % Number of towers corresponds to the number of connected components
-        out.NumTowers(f) = length(stats);
+        out.NumTowers(f+1) = length(stats);
         
-        area = zeros(1,out.NumTowers(f));
-        diameter = zeros(1,out.NumTowers(f));
-        height = zeros(1,out.NumTowers(f));
-        numAnts = zeros(1,out.NumTowers(f));
+        area = zeros(1,out.NumTowers(f+1));
+        diameter = zeros(1,out.NumTowers(f+1));
+        height = zeros(1,out.NumTowers(f+1));
+        numAnts = zeros(1,out.NumTowers(f+1));
         
-        for k = 1:out.NumTowers(f)
+        for k = 1:out.NumTowers(f+1)
             area(k) = stats(k).Area;
             diameter(k) = stats(k).EquivDiameter;
             height(k) = max(h_list(find(towers==k)));
             numAnts(k) =  length(h_list(find(towers==k)));
             
-            if numAnts(k) > out.MaxNumAnts(f)
-                out.MaxHeight(f) = height(k);
-                out.MaxArea(f) = stats(k).Area;
-                out.MaxNumAnts(f) = numAnts(k);
-                out.MaxRatio(f) = height(k)/diameter(k);
+            if numAnts(k) > out.MaxNumAnts(f+1)
+                out.MaxHeight(f+1) = height(k);
+                out.MaxArea(f+1) = stats(k).Area;
+                out.MaxNumAnts(f+1) = numAnts(k);
+                out.MaxRatio(f+1) = height(k)/diameter(k);
             end
         end
 
         ratio = height/diameter;
-        out.AverageArea(f) = mean(area);
-        out.AverageDiameter(f) = mean(diameter);
-        out.AverageHeight(f) = mean(height);
-        out.AverageRatio(f) = mean(ratio);
-        out.AverageNumAnts(f) = mean(numAnts);
+        out.AverageArea(f+1) = mean(area);
+        out.AverageDiameter(f+1) = mean(diameter);
+        out.AverageHeight(f+1) = mean(height);
+        out.AverageRatio(f+1) = mean(ratio);
+        out.AverageNumAnts(f+1) = mean(numAnts);
     end
-    save(strcat(folder,'/',filename,'_out.mat'),'out')
+    save(strcat(outfolder,'/',filename,'_out.mat'),'out')
 end
