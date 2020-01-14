@@ -90,4 +90,3 @@ One output file will be generated, `'cX.XX.puX.XXX.knlX.XXX.vX.avi'`. This video
 
 ## References:
 1. Gary K. Nave Jr., Nelson T. Mitchell, Jordan A. Chan Dick, Tyler Schuessler, Joaquin A. Lagarrigue, Orit Peleg. (2019) bioRxiv 864306; doi: https://doi.org/10.1101/864306.
-2. Phonekeo, S., Mlot, N., Monaenkova, D., Hu, D. L., & Tovey, C. (2017). Fire ants perpetually rebuild sinking towers. Royal Society open science, 4(7), 170475. 
