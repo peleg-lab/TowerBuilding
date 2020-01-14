@@ -23,15 +23,8 @@ function out = TowerProperties(c, p_u, k_nl, v, varargin)
 %%% Optional parameters, parsed using inputParser
     % InputFolder    % Folder to read data from
                      % default: 'Data/Output'
-    % InputFolder    % Folder to save data to
+    % OutputFolder    % Folder to save data to
                      % default: 'Data/Output'
-    % FrameRate      % Frame rate of output video
-                     % default: 30
-    % Quality        % Quality of output video, 1-100
-                     % default: 75
-    % ImageFrequency % Frequency of shown images
-                     % In terms of *saved* frames
-                     % default: 1
 
 %%% Parse input parameters %%%%%
     parser = inputParser;
@@ -96,8 +89,10 @@ function out = TowerProperties(c, p_u, k_nl, v, varargin)
 
         % Binarize height map to occupied/unoccupied pixels
         binary = imbinarize(h_map, 0.5);
+        % Remove any individual pixels from the analysis
+        opened = bwareaopen(binary, 2);
         % Label connected components (which correspond to tower bases)
-        labeled = bwlabel(binary, 8);
+        labeled = bwlabel(opened, 8);
         % Identify equivalent diameter and area of each connected component/tower base
         stats = regionprops(labeled, 'EquivDiameter', 'Area');
         

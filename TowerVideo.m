@@ -23,7 +23,7 @@ function TowerVideo(c, p_u, k_nl, v, varargin)
 %%% Optional parameters, parsed using inputParser
     % InputFolder    % Folder to read data from
                      % default: 'Data/Output'
-    % InputFolder    % Folder to save video to
+    % OutputFolder    % Folder to save video to
                      % default: 'Data/Output'
     % FrameRate      % Frame rate of output video
                      % default: 30
