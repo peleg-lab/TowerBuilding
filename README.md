@@ -62,6 +62,7 @@ One output file will be generated, `'cX.XX.puX.XXX.knlX.XXX.vX_output.mat'`, con
  - `out.MaxHeight`: the height of the largest tower
  - `out.MaxRatio`: the height-diameter ratio of the largest tower
  - `out.MaxNumAnts`: the number of agents in the largest tower
+ 
 Note that in all of these properties, a tower is defined as any group of agents with a base area greater than 1, to remove free individuals from analysis. The largest tower is defined as the tower containing the most agents.
 
 ### `TowerVideo(c, p_u, k_nl, v)`
@@ -78,9 +79,10 @@ The above are all discussed in detail in [Nave et al. (2019)](https://www.biorxi
 #### Optional parameters
  - `'InputFolder'`: Location of input data, default: `'Data/Output'`
  - `'OutputFolder'`: Location of output data, default: `'Data/Output'`
- - `'FrameRate'`: The frame rate of the output video, default: 30
- - `'Quality'`: The quality of the output video on a scale of 1-100, default: 75
- - `'ImageFrequency'`: The frequency of time steps loaded into the video in terms of saved time steps, default: 1
+ - `'FrameRate'`: The frame rate of the output video, default: `30`
+ - `'Quality'`: The quality of the output video on a scale of 1-100, default: `75`
+ - `'ImageFrequency'`: The frequency of time steps loaded into the video in terms of saved time steps, default: `1`
+ 
 The `'ImageFrequency'` is in terms of saved time steps, and is therefore related to the `'SaveFreq'` input of `TowerSimulation`. If `TowerSimulation` saves once every 250 time steps and `'ImageFrequency'` is chosen to be 2, then each frame of the output video will be once every 500 simulation time steps. These will be displayed at the chosen `'FrameRate'`.
 
 #### Output format
