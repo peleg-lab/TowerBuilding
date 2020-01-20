@@ -108,18 +108,23 @@ function out = TowerProperties(c, p_u, k_nl, v, varargin)
         % Number of towers corresponds to the number of connected components
         out.NumTowers(f+1) = length(stats);
         
+	% Initialize values of each property for each tower
         area = zeros(1,out.NumTowers(f+1));
         diameter = zeros(1,out.NumTowers(f+1));
         height = zeros(1,out.NumTowers(f+1));
         numAnts = zeros(1,out.NumTowers(f+1));
         
+	% Iterate through towers with properties
         for k = 1:out.NumTowers(f+1)
-            area(k) = stats(k).Area;
+	    % Base area and equivalent diameter are measured above with regionprops
+            area(k) = stats(k).Area; 
             diameter(k) = stats(k).EquivDiameter;
-            height(k) = max(h_list(find(towers==k)));
-            numAnts(k) =  length(h_list(find(towers==k)));
+            height(k) = max(h_list(find(towers==k))); % Height is the largest z value among individuals in the tower (with towers==k)
+            numAnts(k) =  length(h_list(find(towers==k))); % Number of agents is the number of entries with towers==k
             
+	    % Check if current tower is the largest
             if numAnts(k) > out.MaxNumAnts(f+1)
+		% If so, all max properties are given by the current tower
                 out.MaxHeight(f+1) = height(k);
                 out.MaxArea(f+1) = stats(k).Area;
                 out.MaxNumAnts(f+1) = numAnts(k);
@@ -127,12 +132,16 @@ function out = TowerProperties(c, p_u, k_nl, v, varargin)
             end
         end
 
+	% Calculate height to diameter ratios
         ratio = height/diameter;
+
+	% Take averages and save to output variables
         out.AverageArea(f+1) = mean(area);
         out.AverageDiameter(f+1) = mean(diameter);
         out.AverageHeight(f+1) = mean(height);
         out.AverageRatio(f+1) = mean(ratio);
         out.AverageNumAnts(f+1) = mean(numAnts);
     end
+    % Save variable out to filename_out.mat
     save(strcat(outfolder,'/',filename,'_out.mat'),'out')
 end
